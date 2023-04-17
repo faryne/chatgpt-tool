@@ -8,8 +8,13 @@ def show_error(msg: str):
 
 # show_help 顯示幫助訊息 @TODO
 def show_help():
-    print("""
-    Hello World
+    print("""========= HELP Start =========
+    1. 首先輸入 OpenAI 的 apikey 
+    2. 接著發問
+    
+    輸入 help 後顯示本頁內容
+    輸入 quit 離開本程式
+========= Help End =========
     """)
 
 
@@ -57,22 +62,21 @@ if __name__ == '__main__':
     openaiClient = OpenAI()
     while True:
         if isFirst:
-            help()
+            show_help()
             openaiClient.ask_apikey()
             openaiClient.ask_orgkey()
             isFirst = False
 
-        print("請輸入要問的內容，或是輸入 quit 離開程序 / help 開啟幫助...")
         rawInput = input(">>>我：")
         if rawInput.lower() == "help":
-            help()
+            show_help()
             continue
         elif rawInput.lower() == "quit":
             print("離開程序")
             break
         else:
             try:
-                openaiClient.init_openai_client()
+                openaiClient.send_question(rawInput)
             except openai.error.RateLimitError as e:
                 show_error(e.user_message)
                 break
