@@ -1,3 +1,5 @@
+import json
+
 import openai
 
 
@@ -22,13 +24,10 @@ def show_help():
 class OpenAI:
     # 存放 api_key
     openaiApikey = ""
-    # 存放 org_key
-    openaiOrgKey = ""
 
     # 在建構子重新賦值
     def __init__(self):
         self.openaiApikey = ""
-        self.openaiOrgKey = ""
 
     # 詢問 OpenAI api_key
     def ask_apikey(self):
@@ -40,21 +39,12 @@ class OpenAI:
 
             self.openaiApikey = openai_apikey
 
-    # 詢問 OpenAI OrgKey
-    def ask_orgkey(self):
-        if self.openaiOrgKey == "":
-            openai_orgkey = input("請輸入 OPENAI Orgkey：")
-            if openai_orgkey == "":
-                self.ask_orgkey()
-                return
-
-            self.openaiOrgKey = openai_orgkey
-
     def send_question(self, question: str):
         openai.api_key = self.openaiApikey
-        response = openai.Completion.create(model="text-davinci-003", prompt=question, temperature=0,
-                                            max_tokens=7)
-        print("<<< ChatGPT：", response)
+        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[
+            {"role": "user", "content": question}
+        ])
+        print("<<< ChatGPT：", response.choices[0].message.content)
 
 
 if __name__ == '__main__':
@@ -64,7 +54,6 @@ if __name__ == '__main__':
         if isFirst:
             show_help()
             openaiClient.ask_apikey()
-            openaiClient.ask_orgkey()
             isFirst = False
 
         rawInput = input(">>>我：")
@@ -81,4 +70,3 @@ if __name__ == '__main__':
                 show_error(e.user_message)
                 break
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
