@@ -26,21 +26,24 @@ class OpenAI:
     openaiApikey = ""
 
     # 在建構子重新賦值
-    def __init__(self):
-        self.openaiApikey = ""
+    @classmethod
+    def __init__(cls):
+        cls.openaiApikey = ""
 
     # 詢問 OpenAI api_key
-    def ask_apikey(self):
-        if self.openaiApikey == "":
+    @classmethod
+    def ask_apikey(cls):
+        if cls.openaiApikey == "":
             openai_apikey = input("請輸入 OPENAI Apikey：")
             if openai_apikey == "":
-                self.ask_apikey()
+                cls.ask_apikey()
                 return
 
-            self.openaiApikey = openai_apikey
+            cls.openaiApikey = openai_apikey
 
-    def send_question(self, question: str):
-        openai.api_key = self.openaiApikey
+    @classmethod
+    def send_question(cls, question: str):
+        openai.api_key = cls.openaiApikey
         response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[
             {"role": "user", "content": question}
         ])
